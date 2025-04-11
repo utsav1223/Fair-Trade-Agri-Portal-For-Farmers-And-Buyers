@@ -11,7 +11,7 @@ Empowering Farmers with Better Market Rates — A digital platform that connects
 Here's a look at the homepage of the Fair Trade Agri-Portal:
 
 <p align="center">
-  <img src="images/Home.png" alt="Fair Trade Agri-Portal Homepage" width="700"/>
+  <img src="images/Home.png.png" alt="Fair Trade Agri-Portal Homepage" width="700"/>
 </p>
 
 
