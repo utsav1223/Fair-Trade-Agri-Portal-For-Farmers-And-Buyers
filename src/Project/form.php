@@ -8,6 +8,14 @@ $msg = '';
 // Start session to temporarily store user data
 session_start();
 
+// Load PHPMailer classes (adjusted paths)
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
 // Check if the form has been submitted by the user.
 if (isset($_POST['submit'])) {
     // Get the user inputs from the form.
@@ -36,12 +44,29 @@ if (isset($_POST['submit'])) {
             $insertOtp = "INSERT INTO email_otps (email, otp) VALUES ('$email', '$otp')";
             mysqli_query($conn, $insertOtp);
 
-            // Send OTP to email
-            $subject = "Your OTP for Email Verification";
-            $message = "Dear $name,\n\nYour OTP for email verification is: $otp\n\nRegards,\nAgri Portal Team";
-            $headers = "From: noreply@yourdomain.com";
+            // Send OTP using PHPMailer
+            $mail = new PHPMailer(true);
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'utsavjha93030@gmail.com'; // Replace with your Gmail
+                $mail->Password   = 'tfrh dpmn azoe sueo';    // Replace with your 16-digit App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port       = 465;
 
-            if (mail($email, $subject, $message, $headers)) {
+                // Recipients
+                $mail->setFrom('utsavjha93030@gmail.com', 'Agri Portal');
+                $mail->addAddress($email);
+
+                // Content
+                $mail->isHTML(true);
+                $mail->Subject = "Your OTP for Email Verification";
+                $mail->Body    = "Dear $name,<br><br>Your OTP for email verification is: <strong>$otp</strong><br><br>Regards,<br>Agri Portal Team";
+
+                $mail->send();
+
                 // Store registration data temporarily in session
                 $_SESSION['name'] = $name;
                 $_SESSION['email'] = $email;
@@ -51,13 +76,14 @@ if (isset($_POST['submit'])) {
                 // Redirect to OTP verification page
                 header('Location: verify_otp.php');
                 exit();
-            } else {
-                $msg = "Failed to send OTP. Please try again.";
+            } catch (Exception $e) {
+                $msg = "Failed to send OTP. Mailer Error: {$mail->ErrorInfo}";
             }
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 

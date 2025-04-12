@@ -6,10 +6,10 @@ $msg = '';
 
 // Check if OTP form is submitted
 if (isset($_POST['verify'])) {
-    $entered_otp = $_POST['otp'];
+    $entered_otp = htmlspecialchars($_POST['otp']);
     $email = $_SESSION['email'];
 
-    // Fetch OTP from database
+    // Fetch OTP from database (valid for 5 minutes)
     $query = "SELECT * FROM email_otps WHERE email='$email' AND otp='$entered_otp' AND created_at >= NOW() - INTERVAL 5 MINUTE";
     $result = mysqli_query($conn, $query);
 
@@ -21,6 +21,10 @@ if (isset($_POST['verify'])) {
 
         $insert = "INSERT INTO users (name, email, password, user_type) VALUES ('$name', '$email', '$password', '$user_type')";
         if (mysqli_query($conn, $insert)) {
+            // Optionally delete OTP from table
+            $deleteOtp = "DELETE FROM email_otps WHERE email='$email'";
+            mysqli_query($conn, $deleteOtp);
+
             // Clear session
             session_unset();
             session_destroy();
@@ -36,6 +40,7 @@ if (isset($_POST['verify'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
