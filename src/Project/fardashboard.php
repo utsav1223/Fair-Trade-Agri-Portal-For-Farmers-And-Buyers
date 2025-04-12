@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 // fetch products for specific farmer that what he has added//
 $user_id = $_SESSION['user_id']; // Get logged-in user's ID
 // Fetch products for the logged-in user
-$query_products = "SELECT * FROM products WHERE user_id='$user_id'";
+$query_products = "SELECT * FROM products1 WHERE user_id='$user_id'";
 $result_products = mysqli_query($conn, $query_products);
 // Add Product//
 if (isset($_POST['add_product'])) {
