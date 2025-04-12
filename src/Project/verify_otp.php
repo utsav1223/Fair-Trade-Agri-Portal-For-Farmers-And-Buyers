@@ -47,7 +47,7 @@ if (isset($_POST['verify'])) {
 <head>
     <meta charset="UTF-8">
     <title>Verify OTP</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../output.css">
 </head>
 <body class="bg-green-50 min-h-screen flex items-center justify-center">
 
