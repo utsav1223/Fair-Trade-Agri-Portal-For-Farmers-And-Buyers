@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 <?php
 session_start();
 include "config1.php";

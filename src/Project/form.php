@@ -1,89 +1,76 @@
 <?php
-// Include the connection file to establish a database connection.
 include("config1.php");
-
-// Initialize a variable to store any error or success messages.
+session_start();
 $msg = '';
 
-// Start session to temporarily store user data
-session_start();
-
-// Load PHPMailer classes (adjusted paths)
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'PHPMailer/src/Exception.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
+require 'PHPMailer/src/Exception.php';
 
-// Check if the form has been submitted by the user.
 if (isset($_POST['submit'])) {
-    // Get the user inputs from the form.
-    $name = htmlspecialchars($_POST['name']); // Sanitize the name input
-    $email = htmlspecialchars($_POST['email']); // Sanitize the email input
-    $password = $_POST['password']; // Get the password as it is
-    $cpassword = $_POST['cpassword']; // Get the confirm password
-    $user_type = htmlspecialchars($_POST['user_type']); // Sanitize the user type input
+    $name = htmlspecialchars($_POST['name']);
+    $email = htmlspecialchars($_POST['email']);
+    $password = $_POST['password'];
+    $cpassword = $_POST['cpassword'];
+    $user_type = htmlspecialchars($_POST['user_type']);
 
-    // Check if the password and confirm password match.
     if ($password != $cpassword) {
         $msg = "Passwords do not match!";
     } else {
-        // Check if a user with the same email already exists in the 'users' table.
         $query = "SELECT * FROM users WHERE email='$email'";
         $result = mysqli_query($conn, $query);
 
         if (mysqli_num_rows($result) > 0) {
-            // If the email already exists, display an error message.
             $msg = "User already exists!";
         } else {
-            // Generate OTP
             $otp = rand(100000, 999999);
 
-            // Store OTP in a new table email_otps (create this table in your DB)
-            $insertOtp = "INSERT INTO email_otps (email, otp) VALUES ('$email', '$otp')";
-            mysqli_query($conn, $insertOtp);
+            $checkOtp = mysqli_query($conn, "SELECT * FROM email_otps WHERE email='$email'");
+            if (mysqli_num_rows($checkOtp) > 0) {
+                mysqli_query($conn, "UPDATE email_otps SET otp='$otp' WHERE email='$email'");
+            } else {
+                mysqli_query($conn, "INSERT INTO email_otps (email, otp) VALUES ('$email', '$otp')");
+            }
 
-            // Send OTP using PHPMailer
+            $_SESSION['otp'] = $otp;
+
             $mail = new PHPMailer(true);
             try {
-                // Server settings
                 $mail->isSMTP();
-                $mail->Host       = 'smtp.gmail.com';
-                $mail->SMTPAuth   = true;
-                $mail->Username   = 'utsavjha93030@gmail.com'; // Replace with your Gmail
-                $mail->Password   = 'tfrh dpmn azoe sueo';    // Replace with your 16-digit App Password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-                $mail->Port       = 465;
+                $mail->Host = 'in-v3.mailjet.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'a47bc0083eea25ca5e15d82ed8d31ebd'; // Your Mailjet API key
+                $mail->Password = '339bcda7cb2cd7eeb82ac21ae879419c'; // Your Mailjet Secret Key
+                $mail->SMTPSecure = 'tls';
+                $mail->Port = 587;
 
-                // Recipients
-                $mail->setFrom('utsavjha93030@gmail.com', 'Agri Portal');
-                $mail->addAddress($email);
+                $mail->setFrom('utsavjha93030@gmail.com', 'Agri Portal'); // Replace with verified email
+                $mail->addAddress($email, $name);
 
-                // Content
                 $mail->isHTML(true);
-                $mail->Subject = "Your OTP for Email Verification";
-                $mail->Body    = "Dear $name,<br><br>Your OTP for email verification is: <strong>$otp</strong><br><br>Regards,<br>Agri Portal Team";
+                $mail->Subject = 'Your OTP for Email Verification';
+                $mail->Body    = "<p>Dear $name,<br><br>Your OTP for email verification is: <strong>$otp</strong><br><br>Regards,<br>Agri Portal Team</p>";
 
+                $mail->SMTPDebug = 2; // Enable verbose debug output
                 $mail->send();
-
-                // Store registration data temporarily in session
+                
                 $_SESSION['name'] = $name;
                 $_SESSION['email'] = $email;
                 $_SESSION['password'] = $password;
                 $_SESSION['user_type'] = $user_type;
-
-                // Redirect to OTP verification page
                 header('Location: verify_otp.php');
                 exit();
             } catch (Exception $e) {
                 $msg = "Failed to send OTP. Mailer Error: {$mail->ErrorInfo}";
+                echo 'Mailer Error: ' . $mail->ErrorInfo; // Debugging error output
             }
         }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
