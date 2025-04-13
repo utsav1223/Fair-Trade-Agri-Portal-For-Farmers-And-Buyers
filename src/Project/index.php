@@ -283,17 +283,19 @@ $totalBlogPages = ceil($totalBlogRow['total_blogs'] / $blogPostLimit);
   <main>
   <section class="relative overflow-hidden w-full h-screen" id="Home">
   <div class="slider relative w-full h-screen overflow-hidden">
+
     <!-- Slides Container -->
     <div class="slides flex transition-transform duration-1000 ease-in-out">
 
       <!-- Slide 1 -->
       <div class="slide w-full h-screen flex-shrink-0 relative" data-aos="fade-up">
         <img src="../Components/farmer3.jpg" alt="Farmer Image 1" class="w-full h-screen object-cover brightness-75">
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+        <!-- Content Layer -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-20">
+          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow">
             🌾 Fair Trade, Fair Future
           </h1>
-          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow-[0_3px_6px_rgba(0,0,0,0.7)]">
+          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow">
             Empowering Farmers with Transparent Prices & Opportunities
           </p>
           <a href="interfarepage.php">
@@ -309,11 +311,11 @@ $totalBlogPages = ceil($totalBlogRow['total_blogs'] / $blogPostLimit);
       <!-- Slide 2 -->
       <div class="slide w-full h-screen flex-shrink-0 relative" data-aos="fade-up" data-aos-delay="300">
         <img src="../Components/whl.jpg" alt="Farmer Image 2" class="w-full h-screen object-cover brightness-75">
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-20">
+          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow">
             🚜 Connecting Fields to Future
           </h1>
-          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow-[0_3px_6px_rgba(0,0,0,0.7)]">
+          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow">
             Bridging Farmers and Buyers with Trust & Technology
           </p>
           <a href="interfarepage.php">
@@ -329,11 +331,11 @@ $totalBlogPages = ceil($totalBlogRow['total_blogs'] / $blogPostLimit);
       <!-- Slide 3 -->
       <div class="slide w-full h-screen flex-shrink-0 relative" data-aos="fade-up" data-aos-delay="500">
         <img src="../Components/farmer4.jpg" alt="Farmer Image 3" class="w-full h-screen object-cover brightness-75">
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-20">
+          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow">
             💰 Better Market Rates. Real Impact.
           </h1>
-          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow-[0_3px_6px_rgba(0,0,0,0.7)]">
+          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow">
             Your Produce, Your Price – Fair Trade Agri Portal
           </p>
           <a href="interfarepage.php">
@@ -347,27 +349,28 @@ $totalBlogPages = ceil($totalBlogRow['total_blogs'] / $blogPostLimit);
       </div>
     </div>
 
-    <!-- Gradient Overlay -->
-    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
+    <!-- Gradient Overlay (behind everything now) -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 z-10 pointer-events-none"></div>
 
     <!-- Navigation Buttons -->
     <button
-      class="prev absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-3 rounded-full text-white hover:bg-gray-600">
+      class="prev absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-3 rounded-full text-white hover:bg-gray-600 z-30">
       &#10094;
     </button>
     <button
-      class="next absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-3 rounded-full text-white hover:bg-gray-600">
+      class="next absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-3 rounded-full text-white hover:bg-gray-600 z-30">
       &#10095;
     </button>
 
     <!-- Dots Navigation -->
-    <div class="dots absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-3">
+    <div class="dots absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-3 z-30">
       <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100" data-slide="0"></button>
       <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100" data-slide="1"></button>
       <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100" data-slide="2"></button>
     </div>
   </div>
 </section>
+
 
 
       <!-- About Section -->
