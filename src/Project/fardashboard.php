@@ -1,4 +1,3 @@
-
 <?php
 include("config1.php");
 // if the user is not logined in, redirect to login page//
@@ -696,11 +695,11 @@ AND delivery_status != 'Cancelled'
 
     <!-- Manage Orders Section -->
     <?php
-include "config1.php"; // DB connection
+    include "config1.php"; // DB connection
+    
+    $farmer_user_id = $_SESSION['user_id'] ?? 0;
 
-$farmer_user_id = $_SESSION['user_id'] ?? 0;
-
-$query = "
+    $query = "
 SELECT 
     oi.order_id,
     oi.product_id,
@@ -724,133 +723,136 @@ JOIN profile_management1 pm ON o.buyer_id = pm.user_id
 WHERE oi.farmer_id = '$farmer_user_id' AND oi.delivery_status = 'Pending'
 ";
 
-$result = mysqli_query($conn, $query);
+    $result = mysqli_query($conn, $query);
 
-if (!$result) {
-  echo "<p class='text-red-500 font-semibold'>Query Failed: " . mysqli_error($conn) . "</p>";
-  exit();
-}
+    if (!$result) {
+      echo "<p class='text-red-500 font-semibold'>Query Failed: " . mysqli_error($conn) . "</p>";
+      exit();
+    }
 
-$orders_by_buyer = [];
+    $orders_by_buyer = [];
 
-while ($row = mysqli_fetch_assoc($result)) {
-  $buyer_key = $row['buyer_email'];
+    while ($row = mysqli_fetch_assoc($result)) {
+      $buyer_key = $row['buyer_email'];
 
-  if (!isset($orders_by_buyer[$buyer_key])) {
-    $orders_by_buyer[$buyer_key] = [
-      'buyer_name' => $row['buyer_name'],
-      'buyer_email' => $row['buyer_email'],
-      'buyer_phone' => $row['buyer_phone'],
-      'buyer_address' => $row['buyer_address'],
-      'city' => $row['city'],
-      'state' => $row['state'],
-      'zip_code' => $row['zip_code'],
-      'country' => $row['country'],
-      'payment_status' => $row['payment_status'],
-      'items' => [],
-    ];
-  }
+      if (!isset($orders_by_buyer[$buyer_key])) {
+        $orders_by_buyer[$buyer_key] = [
+          'buyer_name' => $row['buyer_name'],
+          'buyer_email' => $row['buyer_email'],
+          'buyer_phone' => $row['buyer_phone'],
+          'buyer_address' => $row['buyer_address'],
+          'city' => $row['city'],
+          'state' => $row['state'],
+          'zip_code' => $row['zip_code'],
+          'country' => $row['country'],
+          'payment_status' => $row['payment_status'],
+          'items' => [],
+        ];
+      }
 
-  $orders_by_buyer[$buyer_key]['items'][] = [
-    'order_id' => $row['order_id'],
-    'prod_name' => $row['prod_name'],
-    'quantity' => $row['quantity'],
-    'total_price' => $row['total_price'],
-    'delivery_status' => $row['delivery_status'],
-    'order_item_id' => $row['order_item_id']
-  ];
-}
-?>
+      $orders_by_buyer[$buyer_key]['items'][] = [
+        'order_id' => $row['order_id'],
+        'prod_name' => $row['prod_name'],
+        'quantity' => $row['quantity'],
+        'total_price' => $row['total_price'],
+        'delivery_status' => $row['delivery_status'],
+        'order_item_id' => $row['order_item_id']
+      ];
+    }
+    ?>
 
-<!-- ✅ Manage Orders UI -->
-<div class="max-w-7xl mx-auto px-4 my-10 mb-10 mt-10" id="orders">
-  <h2 class="text-2xl font-bold mb-6 flex justify-center items-center gap-2">
-    📦 Manage Orders
-  </h2>
+    <!-- ✅ Manage Orders UI -->
+    <div class="max-w-7xl mx-auto px-4 my-10 mb-10 mt-10" id="orders">
+      <h2 class="text-2xl font-bold mb-6 flex justify-center items-center gap-2">
+        📦 Manage Orders
+      </h2>
 
-  <div class="rounded-lg shadow border border-gray-200 bg-white overflow-x-auto">
-    <table class="w-full text-sm text-left">
-      <thead class="bg-green-600 text-white uppercase font-semibold">
-        <tr>
-          <th class="px-4 py-3">Order IDs</th>
-          <th class="px-4 py-3">Products</th>
-          <th class="px-4 py-3">Quantity Details</th>
-          <th class="px-4 py-3">Price Details (₹)</th>
-          <th class="px-4 py-3">Delivery Status</th>
-          <th class="px-4 py-3">Payment Status</th>
-          <th class="px-4 py-3">Buyer Info</th>
-          <th class="px-4 py-3">Action</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-100">
-        <?php foreach ($orders_by_buyer as $buyer) {
-          $total_quantity = 0;
-          $total_price = 0;
-          $all_items = $buyer['items'];
-          ?>
-          <tr class="hover:bg-gray-50 align-top">
-            <td class="px-4 py-3">
-              <?php foreach ($all_items as $item) {
-                echo "Order #" . $item['order_id'] . "<br>";
-              } ?>
-            </td>
-            <td class="px-4 py-3">
-              <?php foreach ($all_items as $item) {
-                echo htmlspecialchars($item['prod_name']) . "<br>";
-              } ?>
-            </td>
-            <td class="px-4 py-3">
-              <?php foreach ($all_items as $item) {
-                echo htmlspecialchars(": " . $item['quantity']) . " Quintal<br>";
-                $total_quantity += $item['quantity'];
-              } ?>
-              <div class="mt-2 font-semibold text-gray-800">
-                Total Quantity: <?= $total_quantity ?> Quintal
-              </div>
-            </td>
-            <td class="px-4 py-3">
-              <?php foreach ($all_items as $item) {
-                echo htmlspecialchars(": ₹" . number_format($item['total_price'], 2)) . "<br>";
-                $total_price += $item['total_price'];
-              } ?>
-              <div class="mt-2 font-semibold text-gray-800">
-                Total Price: ₹<?= number_format($total_price, 2); ?>
-              </div>
-            </td>
-            <td class="px-4 py-3">
-              <span class="text-yellow-500 font-medium">Pending</span>
-            </td>
-            <td class="px-4 py-3">
-              <?php if (strtolower($buyer['payment_status']) === 'paid') { ?>
-                <span class="text-green-600 font-medium">Paid</span>
-              <?php } else { ?>
-                <span class="text-red-500 font-medium"><?= htmlspecialchars($buyer['payment_status']) ?></span>
-              <?php } ?>
-            </td>
-            <td class="px-4 py-3">
-              <div class="text-sm text-gray-800 leading-relaxed">
-                <strong><?= htmlspecialchars($buyer['buyer_name']) ?></strong><br>
-                <?= htmlspecialchars($buyer['buyer_email']) ?><br>
-                <?= htmlspecialchars($buyer['buyer_phone']) ?><br>
-                <?= nl2br(htmlspecialchars($buyer['buyer_address'])) ?><br>
-                <?= htmlspecialchars($buyer['city']) ?>, <?= htmlspecialchars($buyer['state']) ?><br>
-                <?= htmlspecialchars($buyer['zip_code']) ?>, <?= htmlspecialchars($buyer['country']) ?>
-              </div>
-            </td>
-            <td class="px-4 py-3">
-              <form method="post" action="mark_shipped_item.php">
-                <input type="hidden" name="buyer_email" value="<?= htmlspecialchars($buyer['buyer_email']) ?>">
-                <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
-                  Mark as Shipped
-                </button>
-              </form>
-            </td>
-          </tr>
-        <?php } ?>
-      </tbody>
-    </table>
-  </div>
-</div>
+      <div class="rounded-lg shadow border border-gray-200 bg-white overflow-x-auto">
+        <table class="w-full text-sm text-left">
+          <thead class="bg-green-600 text-white uppercase font-semibold">
+            <tr>
+              <th class="px-4 py-3">Order IDs</th>
+              <th class="px-4 py-3">Products</th>
+              <th class="px-4 py-3">Quantity Details</th>
+              <th class="px-4 py-3">Price Details (₹)</th>
+              <th class="px-4 py-3">Delivery Status</th>
+              <th class="px-4 py-3">Payment Status</th>
+              <th class="px-4 py-3">Buyer Info</th>
+              <th class="px-4 py-3">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <?php foreach ($orders_by_buyer as $buyer) {
+              $total_quantity = 0;
+              $total_price = 0;
+              $all_items = $buyer['items'];
+              ?>
+              <tr class="hover:bg-gray-50 align-top">
+                <td class="px-4 py-3">
+                  <?php foreach ($all_items as $item) {
+                    echo "Order #" . $item['order_id'] . "<br>";
+                  } ?>
+                </td>
+                <td class="px-4 py-3">
+                  <?php foreach ($all_items as $item) {
+                    echo htmlspecialchars($item['prod_name']) . "<br>";
+                  } ?>
+                </td>
+                <td class="px-4 py-3">
+                  <?php foreach ($all_items as $item) {
+                    echo htmlspecialchars(": " . $item['quantity']) . " Quintal<br>";
+                    $total_quantity += $item['quantity'];
+                  } ?>
+                  <div class="mt-2 font-semibold text-gray-800">
+                    Total Quantity: <?= $total_quantity ?> Quintal
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <?php foreach ($all_items as $item) {
+                    echo htmlspecialchars(": ₹" . number_format($item['total_price'], 2)) . "<br>";
+                    $total_price += $item['total_price'];
+                  } ?>
+                  <div class="mt-2 font-semibold text-gray-800">
+                    Total Price: ₹<?= number_format($total_price, 2); ?>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="text-yellow-500 font-medium">Pending</span>
+                </td>
+                <td class="px-4 py-3">
+                  <?php if (strtolower($buyer['payment_status']) === 'paid') { ?>
+                    <span class="text-green-600 font-medium">Paid</span>
+                  <?php } else { ?>
+                    <span class="text-red-500 font-medium"><?= htmlspecialchars($buyer['payment_status']) ?></span>
+                  <?php } ?>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-800 leading-relaxed">
+                    <strong><?= htmlspecialchars($buyer['buyer_name']) ?></strong><br>
+                    <?= htmlspecialchars($buyer['buyer_email']) ?><br>
+                    <?= htmlspecialchars($buyer['buyer_phone']) ?><br>
+                    <?= nl2br(htmlspecialchars($buyer['buyer_address'])) ?><br>
+                    <?= htmlspecialchars($buyer['city']) ?>, <?= htmlspecialchars($buyer['state']) ?><br>
+                    <?= htmlspecialchars($buyer['zip_code']) ?>, <?= htmlspecialchars($buyer['country']) ?>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <form method="post" action="mark_shipped_item.php">
+                    <?php foreach ($all_items as $item): ?>
+                      <input type="hidden" name="order_item_ids[]" value="<?= $item['order_item_id'] ?>">
+                    <?php endforeach; ?>
+                    <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+                      Mark as Shipped
+                    </button>
+                  </form>
+
+                </td>
+              </tr>
+            <?php } ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <!-- Support/Help Section -->
     <div class="container mx-auto px-4" id="support">
