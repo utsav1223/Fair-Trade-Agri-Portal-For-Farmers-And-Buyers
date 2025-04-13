@@ -102,43 +102,129 @@ $totalBlogPages = ceil($totalBlogRow['total_blogs'] / $blogPostLimit);
 </head>
 
 <body class="bg-gray-200" onload="AOS.init();">
-  <div class="font-roboto">
+<div class="font-roboto">
+  <header id="navbar"
+    class="fixed top-0 left-0 w-full z-50 bg-transparent backdrop-blur-md bg-opacity-20 transition-all duration-500"
+    data-aos="fade-down">
+    <div class="flex items-center justify-between p-4">
+      <!-- Logo & Title -->
+      <div class="flex items-center">
+        <img alt="Fair Trade Logo" class="h-12 w-12 md:h-18 md:w-18 ml-3" src="../Components/fair21.png"
+          data-aos="zoom-in" data-aos-delay="200" />
+        <h3 class="pl-2 md:pl-5 text-white text-xl md:text-2xl font-semibold" data-aos="fade-right">
+          Fair Trade <span class="text-orange-400">Agri Portal</span>
+        </h3>
+      </div>
 
-    <header id="navbar"
-      class="fixed top-0 left-0 w-full z-50 bg-transparent backdrop-blur-md bg-opacity-20 transition-all duration-500"
-      data-aos="fade-down">
-      <div class="flex items-center justify-between p-4">
-        <!-- Logo & Title -->
-        <div class="flex items-center">
-          <img alt="Fair Trade Logo" class="h-12 w-12 md:h-18 md:w-18 ml-3" src="../Components/fair21.png"
-            data-aos="zoom-in" data-aos-delay="200" />
-          <h3 class="pl-2 md:pl-5 text-white text-xl md:text-2xl font-semibold" data-aos="fade-right">
-            Fair Trade <span class="text-orange-400">Agri Portal</span>
-          </h3>
-        </div>
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex gap-6 text-white">
+        <ul class="flex gap-6">
+          <li><a class="hover:text-orange-300 transition duration-300" href="#Home">Home</a></li>
+          <li><a class="hover:text-orange-300 transition duration-300" href="#about-us">About Us</a></li>
+          <li><a class="hover:text-orange-300 transition duration-300" href="#marketplace">Explore Market Place</a></li>
+          <li><a class="hover:text-orange-300 transition duration-300" href="#products">Products</a></li>
+          <li><a class="hover:text-orange-300 transition duration-300" href="#blog">Blog</a></li>
+          <li><a class="hover:text-orange-300 transition duration-300" href="#learn">learn</a></li>
+          <li><a class="hover:text-orange-300 transition duration-300" href="#contact">Contact</a></li>
+        </ul>
+      </nav>
 
-        <!-- Desktop Navigation -->
-        <nav class="hidden lg:flex gap-6 text-white">
-          <ul class="flex gap-6">
-            <li><a class="hover:text-orange-300 transition duration-300" href="#Home">Home</a></li>
-            <li><a class="hover:text-orange-300 transition duration-300" href="#about-us">About Us</a></li>
-            <li><a class="hover:text-orange-300 transition duration-300" href="#marketplace">Explore Market Place</a>
-            </li>
-            <li><a class="hover:text-orange-300 transition duration-300" href="#products">Products</a></li>
-            <li><a class="hover:text-orange-300 transition duration-300" href="#blog">Blog</a></li>
-            <li><a class="hover:text-orange-300 transition duration-300" href="#learn">learn</a></li>
-            <li><a class="hover:text-orange-300 transition duration-300" href="#contact">Contact</a></li>
-          </ul>
-        </nav>
+      <!-- Desktop Buttons -->
+      <div class="hidden lg:flex gap-4 items-center">
+        <!-- Cart Icon -->
+        <?php
+        session_start();
+        $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 
-        <!-- Desktop Buttons -->
-        <div class="hidden lg:flex gap-4 items-center">
-          <!-- Cart Icon -->
-          <?php
-          session_start();
-          $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+        if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'buyer') { ?>
+          <a href="cart.php" class="relative text-white text-2xl">
+            🛒
+            <?php if ($cart_count > 0) { ?>
+              <span
+                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <?php echo $cart_count; ?>
+              </span>
+            <?php } ?>
+          </a>
+        <?php }
 
-          if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'buyer') { ?>
+        if (!empty($_SESSION['user_type'])):
+          switch ($_SESSION['user_type']) {
+            case 'farmer':
+              $dashboard_url = "fardashboard.php";
+              break;
+            case 'buyer':
+              $dashboard_url = "buyer_dashboard.php";
+              break;
+            case 'admin':
+              $dashboard_url = "admin.php";
+              break;
+            default:
+              $dashboard_url = "index.php";
+          }
+        ?>
+          <a href="<?= htmlspecialchars($dashboard_url, ENT_QUOTES, 'UTF-8'); ?>">
+            <button
+              class="bg-yellow-500 p-3 text-black rounded-xl transition duration-300 hover:scale-105 hover:bg-yellow-400 shadow-lg">
+              Dashboard
+            </button>
+          </a>
+
+          <a href="logout.php">
+            <button
+              class="bg-red-500 p-3 text-white rounded-xl transition duration-300 hover:scale-105 hover:bg-red-400 shadow-lg">
+              Logout
+            </button>
+          </a>
+        <?php else: ?>
+          <a href="interfarepage.php">
+            <button
+              class="bg-yellow-500 p-3 text-black rounded-xl transition duration-300 hover:scale-105 hover:bg-yellow-400 shadow-lg">
+              Login
+            </button>
+          </a>
+        <?php endif; ?>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button class="lg:hidden text-white" id="menu-toggle">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </div>
+
+    <!-- 🔥 Cart Message Notification -->
+    <?php if (isset($_SESSION['cart_message'])) { ?>
+      <div id="cart-message"
+        class="fixed top-25 left-1/2 transform -translate-x-1/2 bg-white text-green-700 text-lg font-semibold shadow-lg px-6 py-3 rounded-full flex items-center gap-2 transition-all duration-500">
+        ✅ <?php echo $_SESSION['cart_message']; ?>
+      </div>
+      <script>
+        setTimeout(() => {
+          let cartMessage = document.getElementById("cart-message");
+          if (cartMessage) {
+            cartMessage.style.opacity = "0";
+            cartMessage.style.transform = "translateY(-20px)";
+            setTimeout(() => { cartMessage.remove(); }, 500);
+          }
+        }, 3000);
+      </script>
+      <?php unset($_SESSION['cart_message']); ?>
+    <?php } ?>
+
+    <!-- Mobile Menu (Initially Hidden) -->
+    <nav class="lg:hidden hidden flex-col gap-6 text-white p-3" id="mobile-menu">
+      <ul class="flex flex-col gap-6">
+        <li><a class="hover:text-orange-300 transition duration-300" href="#Home">Home</a></li>
+        <li><a class="hover:text-orange-300 transition duration-300" href="#about-us">About Us</a></li>
+        <li><a class="hover:text-orange-300 transition duration-300" href="#marketplace">Explore Market Place</a></li>
+        <li><a class="hover:text-orange-300 transition duration-300" href="#products">Products</a></li>
+        <li><a class="hover:text-orange-300 transition duration-300" href="#blog">Blog</a></li>
+        <li><a class="hover:text-orange-300 transition duration-300" href="#learn">Learn</a></li>
+        <li><a class="hover:text-orange-300 transition duration-300" href="#contact">Contact</a></li>
+
+        <!-- Dashboard & Cart for Mobile -->
+        <li class="flex flex-col gap-3 items-center">
+          <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'buyer') { ?>
             <a href="cart.php" class="relative text-white text-2xl">
               🛒
               <?php if ($cart_count > 0) { ?>
@@ -150,193 +236,139 @@ $totalBlogPages = ceil($totalBlogRow['total_blogs'] / $blogPostLimit);
             </a>
           <?php } ?>
 
-          <!-- Dashboard Button -->
-          <?php if (!empty($_SESSION['user_type'])):
-            switch ($_SESSION['user_type']) {
-              case 'farmer':
-                $dashboard_url = "fardashboard.php";
-                break;
-              case 'buyer':
-                $dashboard_url = "buyer_dashboard.php";
-                break;
-              case 'admin':
-                $dashboard_url = "admin.php";
-                break;
-              default:
-                $dashboard_url = "index.php"; // Default page if user_type is unknown
-            }
-            ?>
+          <?php if (!empty($_SESSION['user_type'])): ?>
             <a href="<?= htmlspecialchars($dashboard_url, ENT_QUOTES, 'UTF-8'); ?>">
               <button
-                class="bg-yellow-500 p-3 text-black rounded-xl transition duration-300 hover:scale-105 hover:bg-yellow-400 shadow-lg">
+                class="bg-yellow-500 p-3 text-black rounded-xl transition duration-300 hover:scale-105 hover:bg-yellow-400 shadow-lg w-full">
                 Dashboard
               </button>
             </a>
-          <?php endif; ?>
 
-
-          <a href="interfarepage.php">
-            <button
-              class="bg-yellow-500 p-3 text-black rounded-xl transition duration-300 hover:scale-105 hover:bg-yellow-400 shadow-lg">
-              Login
-            </button>
-          </a>
-        </div>
-
-        <!-- Mobile Menu Button -->
-        <button class="lg:hidden text-white" id="menu-toggle">
-          <i class="fas fa-bars text-2xl"></i>
-        </button>
-      </div>
-
-      <!-- 🔥 Cart Message Notification -->
-      <?php if (isset($_SESSION['cart_message'])) { ?>
-        <div id="cart-message"
-          class="fixed top-25 left-1/2 transform -translate-x-1/2 bg-white text-green-700 text-lg font-semibold shadow-lg px-6 py-3 rounded-full flex items-center gap-2 transition-all duration-500">
-          ✅ <?php echo $_SESSION['cart_message']; ?>
-        </div>
-        <script>
-          setTimeout(() => {
-            let cartMessage = document.getElementById("cart-message");
-            if (cartMessage) {
-              cartMessage.style.opacity = "0";
-              cartMessage.style.transform = "translateY(-20px)";
-              setTimeout(() => { cartMessage.remove(); }, 500);
-            }
-          }, 3000);
-        </script>
-        <?php unset($_SESSION['cart_message']); ?>
-      <?php } ?>
-
-
-      <!-- Mobile Menu (Initially Hidden) -->
-      <nav class="lg:hidden hidden flex-col gap-6 text-white p-3" id="mobile-menu">
-        <ul class="flex flex-col gap-6">
-          <li><a class="hover:text-orange-300 transition duration-300" href="#Home">Home</a></li>
-          <li><a class="hover:text-orange-300 transition duration-300" href="#about-us">About Us</a></li>
-          <li><a class="hover:text-orange-300 transition duration-300" href="#marketplace">Explore Market Place</a></li>
-          <li><a class="hover:text-orange-300 transition duration-300" href="#products">Products</a></li>
-          <li><a class="hover:text-orange-300 transition duration-300" href="#blog">Blog</a></li>
-          <li><a class="hover:text-orange-300 transition duration-300" href="#learn">Learn</a></li>
-          <li><a class="hover:text-orange-300 transition duration-300" href="#contact">Contact</a></li>
-
-          <!-- Dashboard & Cart for Mobile -->
-          <li class="flex flex-col gap-3 items-center">
-            <!-- Cart Icon -->
-            <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'buyer') { ?>
-              <a href="cart.php" class="relative text-white text-2xl">
-                🛒
-                <?php if ($cart_count > 0) { ?>
-                  <span
-                    class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    <?php echo $cart_count; ?>
-                  </span>
-                <?php } ?>
-              </a>
-            <?php } ?>
-
-            <?php if (!empty($_SESSION['user_type'])): ?>
-              <a href="<?= htmlspecialchars($dashboard_url, ENT_QUOTES, 'UTF-8'); ?>">
-                <button
-                  class="bg-yellow-500 p-3 text-black rounded-xl transition duration-300 hover:scale-105 hover:bg-yellow-400 shadow-lg w-full">
-                  Dashboard
-                </button>
-              </a>
-            <?php endif; ?>
-
+            <a href="logout.php">
+              <button
+                class="bg-red-500 p-3 text-white rounded-xl transition duration-300 hover:scale-105 hover:bg-red-400 shadow-lg w-full">
+                Logout
+              </button>
+            </a>
+          <?php else: ?>
             <a href="interfarepage.php">
               <button
                 class="bg-yellow-500 p-3 text-black rounded-xl transition duration-300 hover:scale-105 hover:bg-yellow-400 shadow-lg w-full">
                 Login
               </button>
             </a>
-          </li>
-        </ul>
-      </nav>
-    </header>
+          <?php endif; ?>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-    <!-- 🔥 Fix: Mobile Menu Toggle Script -->
-    <script>
-      document.getElementById('menu-toggle').addEventListener('click', function () {
-        let menu = document.getElementById('mobile-menu');
-        if (menu.classList.contains('hidden')) {
-          menu.classList.remove('hidden');
-          menu.classList.add('block'); // Show menu
-        } else {
-          menu.classList.remove('block');
-          menu.classList.add('hidden'); // Hide menu
-        }
-      });
-    </script>
-  </div>
+  <!-- 🔥 Fix: Mobile Menu Toggle Script -->
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', function () {
+      let menu = document.getElementById('mobile-menu');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        menu.classList.add('block');
+      } else {
+        menu.classList.remove('block');
+        menu.classList.add('hidden');
+      }
+    });
+  </script>
+</div>
+
 
 
   <main>
-    <section>
-      <!-- Home Section -->
-      <section class="relative overflow-hidden w-full h-screen" id="Home">
-        <div class="slider relative w-full h-screen overflow-hidden">
-          <!-- Slider Container -->
-          <div class="slides flex transition-transform duration-1000 ease-in-out">
-            <div class="slide w-full h-screen flex-shrink-0" data-aos="fade-up">
-              <img src="../Components/farmer3.jpg" alt="Farmer Image 1"
-                class="w-full h-screen object-cover brightness-75">
-            </div>
-            <div class="slide w-full h-screen flex-shrink-0" data-aos="fade-up" data-aos-delay="300">
-              <img src="../Components/farmerai27.jpg" alt="Farmer Image 2"
-                class="w-full h-screen object-cover brightness-75">
-            </div>
-            <div class="slide w-full h-screen flex-shrink-0" data-aos="fade-up" data-aos-delay="500">
-              <img src="../Components/farmer4.jpg" alt="Farmer Image 3"
-                class="w-full h-screen object-cover brightness-75">
-            </div>
-          </div>
+  <section class="relative overflow-hidden w-full h-screen" id="Home">
+  <div class="slider relative w-full h-screen overflow-hidden">
+    <!-- Slides Container -->
+    <div class="slides flex transition-transform duration-1000 ease-in-out">
 
-          <!-- Gradient Overlay -->
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
-
-          <!-- Text Overlay -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <h1 class="text-5xl md:text-7xl font-extrabold text-white drop-shadow-lg tracking-wide animate-fade-in"
-              data-aos="zoom-in">
-              🌿 Empowering Farmers With <span class="text-green-400">Better Market Rates</span> 💰
-            </h1>
-            <p class="mt-4 text-xl md:text-2xl text-gray-200 drop-shadow-md animate-fade-in" data-aos="fade-up"
-              data-aos-delay="400">
-              Connecting <span class="font-bold text-yellow-400">Farmers</span> and <span
-                class="font-bold text-green-300">Buyers</span> For Fair Trade 🚜✨
-            </p>
-            <a href="interfarepage.php">
-              <button class="bg-gradient-to-r from-green-600 to-green-500 p-4 mt-5 text-white rounded-full w-56 text-lg font-semibold shadow-md 
-               hover:from-green-500 hover:to-green-400 hover:scale-105 transition-all duration-300 ease-in-out"
-                data-aos="flip-up" data-aos-delay="600">
-                🚀 Get Started Now!
-              </button>
-            </a>
-
-          </div>
-
-          <!-- Navigation Buttons -->
-          <button
-            class="prev absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-3 rounded-full text-white hover:bg-gray-600">
-            &#10094;
-          </button>
-          <button
-            class="next absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-3 rounded-full text-white hover:bg-gray-600">
-            &#10095;
-          </button>
-
-          <!-- Dots Navigation -->
-          <div class="dots absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-3">
-            <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100"
-              data-slide="0"></button>
-            <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100"
-              data-slide="1"></button>
-            <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100"
-              data-slide="2"></button>
-          </div>
+      <!-- Slide 1 -->
+      <div class="slide w-full h-screen flex-shrink-0 relative" data-aos="fade-up">
+        <img src="../Components/farmer3.jpg" alt="Farmer Image 1" class="w-full h-screen object-cover brightness-75">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+            🌾 Fair Trade, Fair Future
+          </h1>
+          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow-[0_3px_6px_rgba(0,0,0,0.7)]">
+            Empowering Farmers with Transparent Prices & Opportunities
+          </p>
+          <a href="interfarepage.php">
+            <button class="bg-gradient-to-r from-green-600 to-green-500 p-4 mt-6 text-white rounded-full w-56 text-lg font-semibold shadow-md 
+            hover:from-green-500 hover:to-green-400 hover:scale-105 transition-all duration-300 ease-in-out"
+              data-aos="flip-up" data-aos-delay="600">
+              🚀 Get Started Now!
+            </button>
+          </a>
         </div>
-      </section>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide w-full h-screen flex-shrink-0 relative" data-aos="fade-up" data-aos-delay="300">
+        <img src="../Components/whl.jpg" alt="Farmer Image 2" class="w-full h-screen object-cover brightness-75">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+            🚜 Connecting Fields to Future
+          </h1>
+          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow-[0_3px_6px_rgba(0,0,0,0.7)]">
+            Bridging Farmers and Buyers with Trust & Technology
+          </p>
+          <a href="interfarepage.php">
+            <button class="bg-gradient-to-r from-green-600 to-green-500 p-4 mt-6 text-white rounded-full w-56 text-lg font-semibold shadow-md 
+            hover:from-green-500 hover:to-green-400 hover:scale-105 transition-all duration-300 ease-in-out"
+              data-aos="flip-up" data-aos-delay="600">
+              🚀 Get Started Now!
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide w-full h-screen flex-shrink-0 relative" data-aos="fade-up" data-aos-delay="500">
+        <img src="../Components/farmer4.jpg" alt="Farmer Image 3" class="w-full h-screen object-cover brightness-75">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-wide animate-fade-in drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+            💰 Better Market Rates. Real Impact.
+          </h1>
+          <p class="mt-4 text-xl md:text-2xl text-gray-200 animate-fade-in drop-shadow-[0_3px_6px_rgba(0,0,0,0.7)]">
+            Your Produce, Your Price – Fair Trade Agri Portal
+          </p>
+          <a href="interfarepage.php">
+            <button class="bg-gradient-to-r from-green-600 to-green-500 p-4 mt-6 text-white rounded-full w-56 text-lg font-semibold shadow-md 
+            hover:from-green-500 hover:to-green-400 hover:scale-105 transition-all duration-300 ease-in-out"
+              data-aos="flip-up" data-aos-delay="600">
+              🚀 Get Started Now!
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
+
+    <!-- Navigation Buttons -->
+    <button
+      class="prev absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-3 rounded-full text-white hover:bg-gray-600">
+      &#10094;
+    </button>
+    <button
+      class="next absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-3 rounded-full text-white hover:bg-gray-600">
+      &#10095;
+    </button>
+
+    <!-- Dots Navigation -->
+    <div class="dots absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-3">
+      <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100" data-slide="0"></button>
+      <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100" data-slide="1"></button>
+      <button class="dot w-4 h-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100" data-slide="2"></button>
+    </div>
+  </div>
+</section>
+
 
       <!-- About Section -->
       <section id="about-us" data-aos="fade-up">
