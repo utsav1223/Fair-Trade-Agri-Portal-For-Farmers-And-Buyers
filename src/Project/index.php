@@ -830,51 +830,40 @@ $totalBlogPages = ceil($totalBlogRow['total_blogs'] / $blogPostLimit);
 
             <!-- Testimonial 1 -->
             <div class="bg-white shadow-lg rounded-xl p-6 w-72 min-w-[18rem] text-center">
-              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Ramesh Kumar"
+              <img src="../Components/Utsav.jpeg" alt="Utsav Kumar Jha"
                 class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-green-500 shadow">
-              <p class="text-green-700 mb-4 italic">“This portal changed the way I sell my crops. Fair pricing and
-                real buyers!”</p>
-              <h4 class="font-bold text-green-900">Ramesh Kumar</h4>
-              <p class="text-sm text-green-600">Farmer, Bihar</p>
+              <p class="text-green-700 mb-4 italic">“Full Stack Developer</p>
+              <h4 class="font-bold text-green-900">From Chattisgarh</h4>
+              <p class="text-sm text-green-600">Admin</p>
             </div>
 
             <!-- Testimonial 2 -->
             <div class="bg-white shadow-lg rounded-xl p-6 w-72 min-w-[18rem] text-center">
-              <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Sunita Devi"
+              <img src="../Components/Piyush.jpeg" alt="Piyush Mani Tiwari"
                 class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-green-500 shadow">
-              <p class="text-green-700 mb-4 italic">“Love the market insights. Helps me plan what to grow!”</p>
-              <h4 class="font-bold text-green-900">Sunita Devi</h4>
-              <p class="text-sm text-green-600">Farmer, UP</p>
+              <p class="text-green-700 mb-4 italic">FullStackDeveloper</p>
+              <h4 class="font-bold text-green-900">From UP</h4>
+              <p class="text-sm text-green-600">Admin</p>
             </div>
 
             <!-- Testimonial 3 -->
             <div class="bg-white shadow-lg rounded-xl p-6 w-72 min-w-[18rem] text-center">
-              <img src="https://randomuser.me/api/portraits/men/74.jpg" alt="Manoj Yadav"
+              <img src="../Components/Nitin.jpeg" alt="Nitin Singh Sikarwar"
                 class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-green-500 shadow">
-              <p class="text-green-700 mb-4 italic">“Great support and easy to list my produce. Highly recommended!”
+              <p class="text-green-700 mb-4 italic">FullStackDeveloper
               </p>
-              <h4 class="font-bold text-green-900">Manoj Yadav</h4>
-              <p class="text-sm text-green-600">Farmer, MP</p>
+              <h4 class="font-bold text-green-900">From UP</h4>
+              <p class="text-sm text-green-600">Admin</p>
             </div>
 
             <!-- Duplicate Cards to Continue Loop Smoothly -->
             <div class="bg-white shadow-lg rounded-xl p-6 w-72 min-w-[18rem] text-center">
-              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Ramesh Kumar"
+              <img src="../Components/Pranaw.jpeg" alt="Pranaw Kumar"
                 class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-green-500 shadow">
-              <p class="text-green-700 mb-4 italic">“This portal changed the way I sell my crops. Fair pricing and
-                real buyers!”</p>
-              <h4 class="font-bold text-green-900">Ramesh Kumar</h4>
-              <p class="text-sm text-green-600">Farmer, Bihar</p>
+              <p class="text-green-700 mb-4 italic">FullStackDeveloper</p>
+              <h4 class="font-bold text-green-900">From Jharkhand</h4>
+              <p class="text-sm text-green-600">Admin</p>
             </div>
-
-            <div class="bg-white shadow-lg rounded-xl p-6 w-72 min-w-[18rem] text-center">
-              <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Sunita Devi"
-                class="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-green-500 shadow">
-              <p class="text-green-700 mb-4 italic">“Love the market insights. Helps me plan what to grow!”</p>
-              <h4 class="font-bold text-green-900">Sunita Devi</h4>
-              <p class="text-sm text-green-600">Farmer, UP</p>
-            </div>
-
           </div>
         </div>
       </div>
